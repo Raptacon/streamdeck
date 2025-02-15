@@ -1,9 +1,11 @@
 import os
 import threading
+import sys
 
 from PIL import Image, ImageDraw, ImageFont
 from StreamDeck.DeviceManager import DeviceManager
 from StreamDeck.ImageHelpers import PILHelper
+from StreamDeck.Transport.Transport import TransportError
 from networktables import NetworkTables
 from ntcore import *
 
@@ -176,6 +178,9 @@ def key_change_callback(deck, key, state):
 
                 # Close deck handle, terminating internal worker threads.
                 deck.close()
+
+                # Has its own thead, need to shut down to quit program
+                NetworkTables.shutdown()
 
 
 if __name__ == "__main__":
