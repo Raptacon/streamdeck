@@ -45,7 +45,7 @@ def get_key_style(deck, key, state):
                 "icon": "{}.png".format("smile"),
                 "font": "Roboto-Regular.ttf",
                 "label": "Remove Upper Algae"},
-            3: {"name": "Blank",
+            3: {"name": "exit",
                 "icon": "{}.png".format("smile"),
                 "font": "Roboto-Regular.ttf",
                 "label": ""},
@@ -89,7 +89,7 @@ def get_key_style(deck, key, state):
                 "icon": "{}.png".format("smile"),
                 "font": "Roboto-Regular.ttf",
                 "label": "Ground Coral Intake"},
-            14: {"name": "exit",
+            14: {"name": "Eject Coral",
                 "icon": "{}.png".format("smile"),
                 "font": "Roboto-Regular.ttf",
                 "label": "Eject Coral"}}
@@ -150,10 +150,7 @@ def key_change_callback(deck, key, state):
     # else: 
     #     key2 = -1
 
-    # pressed = {"Pressed": key2}
-
-    # if state:
-    #     sdv.putBoolean("boolExample", key)
+    # pressed = {"Pressed": key2}      
 
     # Don't try to draw an image on a touch button
     if key >= deck.key_count():
@@ -165,6 +162,9 @@ def key_change_callback(deck, key, state):
     # Check if the key is changing to the pressed state.
     if state:
         key_style = get_key_style(deck, key, state)
+
+        # publishes key to networktables
+        sdv.putNumber("pressedKey", key)
 
         # When an exit button is pressed, close the application.
         if key_style["name"] == "exit":
