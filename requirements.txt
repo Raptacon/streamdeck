@@ -1,2 +1,4 @@
 streamdeck
 pillow
+pyntcore
+pynetworktables

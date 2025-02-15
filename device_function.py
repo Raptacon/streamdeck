@@ -4,10 +4,14 @@ import threading
 from PIL import Image, ImageDraw, ImageFont
 from StreamDeck.DeviceManager import DeviceManager
 from StreamDeck.ImageHelpers import PILHelper
+from networktables import NetworkTables
+from ntcore import *
 
 # Folder location of image assets used by this example.
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "attributes")
 
+NetworkTables.initialize(server = "10.32.0.2")
+sdv = NetworkTables.getTable("streamdeck")
 
 # Generates a custom tile with run-time generated text and custom image via the
 # PIL module.
@@ -29,25 +33,93 @@ def render_key_image(deck, icon_filename, font_filename, label_text):
 
 # Returns styling information for a key based on its position and state.
 def get_key_style(deck, key, state):
-    # Last button in the example application is the exit button.
-    exit_key_index = deck.key_count() - 1
+    keys = {0: {"name": "L4",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "L4"},
+            1: {"name": "R4",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "R4"},
+            2: {"name": "Remove Algae Upper",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "Remove Upper Algae"},
+            3: {"name": "Blank",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": ""},
+            4: {"name": "Net",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "Net"},
+            5: {"name": "L3",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "L3"},
+            6: {"name": "R3",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "R3"},
+            7: {"name": "Remove Algae Lower",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "Remove Lower Algae"},
+            8: {"name": "Algae Intake",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "Algae Intake"},
+            9: {"name": "Eject Algae",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "Eject Algae"},
+            10: {"name": "L2",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "L2"},
+            11: {"name": "R2",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "R2"},
+            12: {"name": "Trough",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "Trough"},
+            13: {"name": "Ground Coral Intake",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "Ground Coral Intake"},
+            14: {"name": "exit",
+                "icon": "{}.png".format("smile"),
+                "font": "Roboto-Regular.ttf",
+                "label": "Eject Coral"}}
 
-    if key == exit_key_index:
-        name = "exit"
-        icon = "{}.png".format("smile")
-        font = "Roboto-Regular.ttf"
-        label = "Bye" if state else "Exit"
-    else:
-        name = "emoji"
-        icon = "{}.png".format("the last of em" if state else "the_third_image")
-        font = "Roboto-Regular.ttf"
-        label = "Pressed!" if state else "Key {}".format(key)
+    # if key == keys[0]:
+    #     name = keys[0]["name"]
+    #     icon = keys[0]["icon"]
+    #     font = keys[0]["font"]
+    #     label = keys[0]["label"]
+    # elif key == keys[1]:
+    #     name = keys[1]["name"]
+    #     icon = keys[1]["icon"]
+    #     font = keys[1]["font"]
+    #     label = keys[1]["label"]
+    # else:
+    #     name = keys[14]["name"]
+    #     icon = keys[14]["icon"]
+    #     font = keys[14]["font"]
+    #     label = keys[14]["label"]
+
+        # name = "emoji"
+        # icon = "{}.png".format("the last of em" if state else "the_third_image")
+        # font = "Roboto-Regular.ttf"
+        # label = "Pressed!" if state else "Key {}".format(key)
 
     return {
-        "name": name,
-        "icon": os.path.join(ASSETS_PATH, icon),
-        "font": os.path.join(ASSETS_PATH, font),
-        "label": label
+        "name": keys[key]["name"],
+        "icon": os.path.join(ASSETS_PATH, keys[key]["icon"]),
+        "font": os.path.join(ASSETS_PATH, keys[key]["font"]),
+        "label": keys[key]["label"]
     }
 
 
@@ -72,6 +144,16 @@ def update_key_image(deck, key, state):
 def key_change_callback(deck, key, state):
     # Print new key state
     print("Deck {} Key {} = {}".format(deck.id(), key, state), flush=True)
+
+    # if state:
+    #     key2 = key
+    # else: 
+    #     key2 = -1
+
+    # pressed = {"Pressed": key2}
+
+    # if state:
+    #     sdv.putBoolean("boolExample", key)
 
     # Don't try to draw an image on a touch button
     if key >= deck.key_count():
