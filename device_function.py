@@ -12,8 +12,9 @@ from ntcore import *
 # Folder location of image assets used by this example.
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "attributes")
 
-NetworkTables.initialize(server = "10.32.0.2")
-sdv = NetworkTables.getTable("streamdeck")
+# NetworkTables.initialize(server = "10.32.0.2")
+NetworkTables.initialize(server = "localhost")
+sdv = NetworkTables.getTable("Stream_Deck")
 
 # Generates a custom tile with run-time generated text and custom image via the
 # PIL module.
