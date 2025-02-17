@@ -37,63 +37,63 @@ def render_key_image(deck, icon_filename, font_filename, label_text):
 # Returns styling information for a key based on its position and state.
 def get_key_style(deck, key, state):
     keys = {0: {"name": "L4",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "L4"},
             1: {"name": "R4",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "R4"},
             2: {"name": "Remove Algae Upper",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "Remove Upper Algae"},
             3: {"name": "exit",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("TeamLogo"),
                 "font": "Roboto-Regular.ttf",
                 "label": ""},
             4: {"name": "Net",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "Net"},
             5: {"name": "L3",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "L3"},
             6: {"name": "R3",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "R3"},
             7: {"name": "Remove Algae Lower",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "Remove Lower Algae"},
             8: {"name": "Algae Intake",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "Algae Intake"},
             9: {"name": "Eject Algae",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "Eject Algae"},
             10: {"name": "L2",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "L2"},
             11: {"name": "R2",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "R2"},
             12: {"name": "Trough",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "Trough"},
             13: {"name": "Ground Coral Intake",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "Ground Coral Intake"},
             14: {"name": "Eject Coral",
-                "icon": "{}.png".format("smile"),
+                "icon": "{}.png".format("placeholder"),
                 "font": "Roboto-Regular.ttf",
                 "label": "Eject Coral"}}
 
@@ -146,14 +146,7 @@ def update_key_image(deck, key, state):
 # associated actions when a key is pressed.
 def key_change_callback(deck, key, state):
     # Print new key state
-    print("Deck {} Key {} = {}".format(deck.id(), key, state), flush=True)
-
-    # if state:
-    #     key2 = key
-    # else: 
-    #     key2 = -1
-
-    # pressed = {"Pressed": key2}      
+    print("Deck {} Key {} = {}".format(deck.id(), key, state), flush=True)    
 
     # Don't try to draw an image on a touch button
     if key >= deck.key_count():
@@ -162,12 +155,18 @@ def key_change_callback(deck, key, state):
     # Update the key image based on the new key state.
     update_key_image(deck, key, state)
 
+    
+    if state:
+        sdv.putNumber("pressedKey", key)
+    else:
+        sdv.putNumber("pressedKey", -1)
+
     # Check if the key is changing to the pressed state.
     if state:
         key_style = get_key_style(deck, key, state)
 
         # publishes key to networktables
-        sdv.putNumber("pressedKey", key)
+        # sdv.putNumber("pressedKey", key)
 
         # When an exit button is pressed, close the application.
         if key_style["name"] == "exit":
