@@ -156,6 +156,7 @@ def key_change_callback(deck, key, state):
     update_key_image(deck, key, state)
 
     
+
     if state:
         sdv.putNumber("pressedKey", key)
     else:

@@ -2,3 +2,4 @@ streamdeck
 pillow
 pyntcore
 pynetworktables
+wbilib.SmartDashboard
