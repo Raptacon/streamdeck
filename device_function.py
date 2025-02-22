@@ -1,6 +1,7 @@
 import os
 import threading
 import sys
+import time
 
 from PIL import Image, ImageDraw, ImageFont
 from StreamDeck.DeviceManager import DeviceManager
@@ -8,6 +9,7 @@ from StreamDeck.ImageHelpers import PILHelper
 from StreamDeck.Transport.Transport import TransportError
 from networktables import NetworkTables
 from ntcore import *
+from wpilib import SmartDashboard
 
 # Folder location of image assets used by this example.
 ASSETS_PATH = os.path.join(os.path.dirname(__file__), "attributes")
@@ -15,6 +17,17 @@ ASSETS_PATH = os.path.join(os.path.dirname(__file__), "attributes")
 # NetworkTables.initialize(server = "10.32.0.2")
 NetworkTables.initialize(server = "localhost")
 sdv = NetworkTables.getTable("Stream_Deck")
+
+global heartbeat_finnished
+heartbeat_finnished = False
+
+def heartbeat():
+    i = 0
+    global heartbeat_finnished
+    while not heartbeat_finnished:
+        sdv.putNumber("Stream Deck HeartBeat", i)
+        time.sleep(1)
+        i += 1
 
 # Generates a custom tile with run-time generated text and custom image via the
 # PIL module.
@@ -155,7 +168,7 @@ def key_change_callback(deck, key, state):
     # Update the key image based on the new key state.
     update_key_image(deck, key, state)
 
-    
+
 
     if state:
         sdv.putNumber("pressedKey", key)
@@ -183,6 +196,8 @@ def key_change_callback(deck, key, state):
                 # Has its own thead, need to shut down to quit program
                 NetworkTables.shutdown()
 
+                global heartbeat_finnished
+                heartbeat_finnished = True
 
 if __name__ == "__main__":
     streamdecks = DeviceManager().enumerate()
@@ -210,6 +225,9 @@ if __name__ == "__main__":
 
         # Register callback function for when a key state changes.
         deck.set_key_callback(key_change_callback)
+
+        t = threading.Thread(target=heartbeat)
+        t.start()
 
         # Wait until all application threads have terminated (for this example,
         # this is when all deck handles are closed).
