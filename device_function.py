@@ -16,7 +16,7 @@ ASSETS_PATH = os.path.join(os.path.dirname(__file__), "attributes")
 
 # NetworkTables.initialize(server = "10.32.0.2")
 NetworkTables.initialize(server = "localhost")
-sdv = NetworkTables.getTable("Stream_Deck")
+streamdeck_tables = NetworkTables.getTable("Stream_Deck")
 
 global heartbeat_finnished
 heartbeat_finnished = False
@@ -25,7 +25,7 @@ def heartbeat():
     i = 0
     global heartbeat_finnished
     while not heartbeat_finnished:
-        sdv.putNumber("Stream Deck HeartBeat", i)
+        streamdeck_tables.putNumber("Stream Deck HeartBeat", i)
         time.sleep(1)
         i += 1
 
@@ -168,19 +168,15 @@ def key_change_callback(deck, key, state):
     # Update the key image based on the new key state.
     update_key_image(deck, key, state)
 
-
-
+    # publishes key to networktables
     if state:
-        sdv.putNumber("pressedKey", key)
+        streamdeck_tables.putNumber("pressedKey", key)
     else:
-        sdv.putNumber("pressedKey", -1)
+        streamdeck_tables.putNumber("pressedKey", -1)
 
     # Check if the key is changing to the pressed state.
     if state:
         key_style = get_key_style(deck, key, state)
-
-        # publishes key to networktables
-        # sdv.putNumber("pressedKey", key)
 
         # When an exit button is pressed, close the application.
         if key_style["name"] == "exit":
